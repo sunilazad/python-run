@@ -23,8 +23,9 @@ logger.addHandler(logger_file_handler)
 
 try:
     YOUR_BOT_TOKEN = os.environ["YOUR_BOT_TOKEN"]
-except KeyError:
-    YOUR_BOT_TOKEN = '7323461801:AAHK5MlVP2cIryQwu2D7iRBKNHNbjnu0Ewk'
+except KeyError as e:
+    YOUR_BOT_TOKEN = 'no bot-token found'
+    logger.info(f'no bot-token found and error is {e}')
 
 # Store recent messages
 chat_history = []  
