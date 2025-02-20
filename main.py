@@ -1,5 +1,3 @@
-YOUR_BOT_TOKEN = '7323461801:AAHK5MlVP2cIryQwu2D7iRBKNHNbjnu0Ewk'
-
 import logging
 import tracemalloc
 import asyncio
@@ -11,11 +9,22 @@ from telegram.ext import (ApplicationBuilder, CommandHandler, MessageHandler, fi
 nest_asyncio.apply()
 tracemalloc.start()
 
-# Configure logging
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+logger_file_handler = logging.handlers.RotatingFileHandler(
+    "status.log",
+    maxBytes=1024 * 1024,
+    backupCount=1,
+    encoding="utf8",
 )
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logger_file_handler.setFormatter(formatter)
+logger.addHandler(logger_file_handler)
+
+try:
+    YOUR_BOT_TOKEN = os.environ["YOUR_BOT_TOKEN"]
+except KeyError:
+    YOUR_BOT_TOKEN = '7323461801:AAHK5MlVP2cIryQwu2D7iRBKNHNbjnu0Ewk'
 
 # Store recent messages
 chat_history = []  
@@ -85,16 +94,10 @@ loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
 '''    
 if __name__ == '__main__':
-    '''
     try:
-        print('rnning..')
-        asyncio.run(main())  # Run the bot properly
-    except RuntimeError as e:
-        print(e)
-        pass 
-    
-    '''
-    loop = asyncio.get_event_loop()
-    loop.create_task(main())  # Schedule the bot in the existing event loop
-    loop    #.run_forever()  # Keep the event loop running
-    
+        loop = asyncio.get_event_loop()
+        loop.create_task(main())  # Schedule the bot in the existing event loop
+        loop    #.run_forever()  # Keep the event loop running
+        logger.info('Telegram Bot started')
+    except error as e:
+        logger.info(e)
